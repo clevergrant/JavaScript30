@@ -1,74 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>JS + CSS Clock</title>
+	<meta charset="UTF-8">
+
+	<title>JS + CSS Clock</title>
+
+	<style>
+		@import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
+
+		html {
+			background-size: cover;
+			font-family: 'helvetica neue';
+			text-align: center;
+			font-size: 10px;
+		}
+
+		body {
+			margin: 0;
+			font-size: 2rem;
+			display: flex;
+			flex: 1;
+			min-height: 100vh;
+			align-items: center;
+		}
+
+		h1 {
+			position: absolute;
+			top: 5rem;
+			width: 100%;
+			font-family: 'Raleway', sans-serif;
+		}
+
+		.clock {
+			background: #018DED;
+			width: 30rem;
+			height: 30rem;
+			border: 20px solid white;
+			border-radius: 50%;
+			margin: 50px auto;
+			position: relative;
+			padding: 2rem;
+			box-shadow:
+				0 0 0 4px rgba(0, 0, 0, 0.1),
+				inset 0 0 0 3px #EFEFEF,
+				inset 0 0 10px black,
+				0 0 10px 4px rgba(0, 0, 0, 0.2);
+		}
+
+		.clock-face {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transform: translateY(-3px);
+			/* account for the height of the clock hands */
+		}
+
+		.hand {
+			width: 50%;
+			position: absolute;
+
+			transform-origin: 100%;
+			transform: rotate(90deg);
+			transition: all 1s;
+		}
+
+		.second-hand {
+			top: calc(50% - 1.5px);
+			height: 3px;
+			background-color: #c00000;
+			transition: all .08s cubic-bezier(0.34, 0.43, 0.32, 2.24)
+		}
+
+		.min-hand {
+			top: calc(50% - 2.5px);
+			height: 5px;
+			background-color: #222;
+		}
+
+		.hour-hand {
+			top: calc(50% - 4.5px);
+			height: 9px;
+			width: 30%;
+			margin-left: 20%;
+			background-color: black;
+		}
+
+		.hub {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-10px, -10px);
+
+			background-color: white;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.75);
+		}
+
+		.tick {
+			border-radius: 50%;
+			position: absolute;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.75);
+			background: white;
+			z-index: -1;
+		}
+
+		.lg {
+			width: 11px;
+			height: 11px;
+			top: calc(50% - 5.5px);
+			left: -5.5px;
+			transform-origin: calc(15rem + 5.5px);
+		}
+
+		.md {
+			width: 6px;
+			height: 6px;
+			top: calc(50% - 3px);
+			left: -3px;
+			transform-origin: calc(15rem + 3px);
+		}
+
+		.sm {
+			width: 2px;
+			height: 2px;
+			top: calc(50% - 1px);
+			left: -1px;
+			transform-origin: calc(15rem + 1px);
+		}
+	</style>
+
 </head>
+
 <body>
 
+	<h1>JS and CSS Clock</h1>
 
-    <div class="clock">
-      <div class="clock-face">
-        <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
-        <div class="hand second-hand"></div>
-      </div>
-    </div>
+	<div class="clock">
+		<div class="clock-face">
+			<div class="hand hour-hand"></div>
+			<div class="hand min-hand"></div>
+			<div class="hand second-hand"></div>
+			<div class="hub"></div>
+		</div>
+	</div>
 
+	<script>
 
-  <style>
-    html {
-      background: #018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
-      background-size: cover;
-      font-family: 'helvetica neue';
-      text-align: center;
-      font-size: 10px;
-    }
+		const secondHand = document.querySelector('.second-hand');
+		const minuteHand = document.querySelector('.min-hand');
+		const hourHand = document.querySelector('.hour-hand');
 
-    body {
-      margin: 0;
-      font-size: 2rem;
-      display: flex;
-      flex: 1;
-      min-height: 100vh;
-      align-items: center;
-    }
+		let now = new Date()
 
-    .clock {
-      width: 30rem;
-      height: 30rem;
-      border: 20px solid white;
-      border-radius: 50%;
-      margin: 50px auto;
-      position: relative;
-      padding: 2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
-    }
+		let totalSeconds = now.getSeconds()
 
-    .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
-    }
+		function setDate() {
+			now = new Date()
+			totalSeconds++
 
-    .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
-      position: absolute;
-      top: 50%;
-    }
+			const secondsDegrees = (totalSeconds / 60 * 360) + 90
+			secondHand.style.transform = `rotate(${secondsDegrees}deg)`
 
-  </style>
+			const seconds = now.getSeconds()
+			const minutes = now.getMinutes()
+			const minutesDegrees = (minutes / 60 * 360) + (seconds / 60 * 6) + 90
+			minuteHand.style.transform = `rotate(${minutesDegrees}deg)`
 
-  <script>
+			const hours = now.getHours()
+			const hoursDegrees = (hours / 12 * 360) + (minutes / 60 * 30) + 90
+			hourHand.style.transform = `rotate(${hoursDegrees}deg)`
+		}
 
+		setInterval(setDate, 1000)
 
-  </script>
+		setDate()
+
+		function addTicks() {
+			const face = document.querySelector('.clock-face')
+			for (let i = 0; i < 4; i++) {
+				const tick = document.createElement('div')
+				tick.classList.add('lg', 'tick')
+				tick.setAttribute('style', `transform: rotate(${90 * i}deg);`)
+				face.appendChild(tick)
+			}
+
+			for (let i = 0; i < 4; i++) {
+				for (let j = 0; j < 2; j++) {
+					const tick = document.createElement('div')
+					tick.classList.add('md', 'tick')
+					tick.setAttribute('style', `transform: rotate(${30 + (90 * i) + (30 * j)}deg);`)
+					face.appendChild(tick)
+				}
+			}
+
+			for (let i = 0; i < 12; i++) {
+				for (let j = 0; j < 4; j++) {
+					const tick = document.createElement('div')
+					tick.classList.add('sm', 'tick')
+					tick.setAttribute('style', `transform: rotate(${6 + (30 * i) + (6 * j)}deg);`)
+					face.appendChild(tick)
+				}
+			}
+		}
+
+		addTicks()
+	</script>
+
 </body>
+
 </html>
