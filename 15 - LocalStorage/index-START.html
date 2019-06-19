@@ -68,7 +68,7 @@
 			platesList.innerHTML = plates.map((plate, index) => {
 				return `
 					<li>
-						<input type="checkbox" data-index="${index}" id="item${index}" ${plate.done ? 'checked' : ''} />
+						<input type="checkbox" data-index="${index}" id="item${index}" ${plate.done ? `checked` : ``} />
 						<label for="item${index}">${plate.text}</label>
 					</li>
 				`
@@ -79,11 +79,11 @@
 			if (!e.target.matches('input')) return
 
 			const el = e.target
-			const index = el.dataset.index
+			const { index } = el.dataset
 
 			items[index].done = !items[index].done
-			localStorage.setItem('items', JSON.stringify(items))
 
+			localStorage.setItem('items', JSON.stringify(items))
 			populateList(items, itemsList)
 		}
 
